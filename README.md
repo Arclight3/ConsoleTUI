@@ -21,6 +21,7 @@ Some of the customization options are:
 
 ## Code Examples
 
+### Print a menu and return the selected option
 ```c#
 
 // Declare a Console text user interface
@@ -37,4 +38,28 @@ var option = console.ReadUserInput();
 
 // Act on the selected option
 if (option.Name is "Option 1") { // ... }
+
+```
+
+### Change default theme options
+```c#
+
+// Declare a Console text user interface
+var console = new TextUserInterface();
+
+// Declare a theme with custom options
+var theme = new DefaultTheme
+{
+    TitleForegroundColor = ConsoleColor.DarkYellow
+};
+
+// Set the theme
+console.SetTheme(theme);
+
+// Create a menu
+var menu = Menu.Create("Test Menu", "Option 1", "Option 2", "Option 3");
+
+// Print the menu
+console.PrintMenu(menu);
+
 ```
