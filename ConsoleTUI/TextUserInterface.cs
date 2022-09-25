@@ -24,7 +24,7 @@ public class TextUserInterface
     {
         SetCurrentMenu(menu);
 
-        (_currentMenu.LeftStartPosition, _currentMenu.TopStartPosition) = NativeGetCursorPosition();
+        (_currentMenu!.LeftStartPosition, _currentMenu.TopStartPosition) = NativeGetCursorPosition();
         PrintCurrentMenu();
         (_currentMenu.LeftEndPosition, _currentMenu.TopEndPosition) = NativeGetCursorPosition();
 
