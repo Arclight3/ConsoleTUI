@@ -1,4 +1,4 @@
-﻿namespace ConsoleTUI.Models;
+﻿namespace Iustinsoft.ConsoleTUI.Models;
 
 public record Option
 {

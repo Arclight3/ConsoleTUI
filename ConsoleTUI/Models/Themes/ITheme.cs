@@ -1,4 +1,4 @@
-﻿namespace ConsoleTUI.Models.Themes;
+﻿namespace Iustinsoft.ConsoleTUI.Models.Themes;
 
 public interface ITheme
 {

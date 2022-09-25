@@ -1,7 +1,7 @@
-﻿using ConsoleTUI.Models;
-using ConsoleTUI.Models.Themes;
+﻿using Iustinsoft.ConsoleTUI.Models;
+using Iustinsoft.ConsoleTUI.Models.Themes;
 
-namespace ConsoleTUI;
+namespace Iustinsoft.ConsoleTUI;
 
 public class TextUserInterface
 {
