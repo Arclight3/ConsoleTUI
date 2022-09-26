@@ -35,10 +35,31 @@ public class TextUserInterface
     {
         if (_currentMenu is not null)
         {
-            ClearCurrentMenu();
+            ClearMenu();
 
             PrintCurrentMenu(true);
         }
+    }
+
+    public void ClearMenu(bool restoreCurrentCursorPosition = true)
+    {
+        if (_currentMenu is null) throw new Exception("Unable to clear current menu because it was not provided.");
+
+        var currentCursorPositionBackup = NativeGetCursorPosition();
+
+        var topCurrentPosition = _currentMenu.TopStartPosition;
+        var topEndPosition = _currentMenu.TopEndPosition;
+
+        while (topCurrentPosition < topEndPosition)
+        {
+            NativeSetCursorPosition(currentCursorPositionBackup.LeftPosition, topCurrentPosition);
+
+            NativeClearCurrentLine();
+            topCurrentPosition++;
+        }
+
+        if (restoreCurrentCursorPosition)
+            NativeSetCursorPosition(currentCursorPositionBackup.LeftPosition, currentCursorPositionBackup.TopPosition);
     }
 
     public void ClearScreen()
@@ -50,7 +71,7 @@ public class TextUserInterface
         {
             NativeSetCursorPosition(0, topCurrentPosition);
 
-            Console.Write(new string(' ', Console.BufferWidth));
+            NativeClearCurrentLine();
             topCurrentPosition++;
         }
 
@@ -85,16 +106,83 @@ public class TextUserInterface
     }
 
     // Other
-    public void Print(string text)
+    public void Print(string? text = null, ConsoleColor? textForegroundColor = null, ConsoleColor? textBackgroundColor = null)
     {
         SetCursor();
-        NativePrint(text);
+        NativePrint(text, textForegroundColor, textBackgroundColor);
     }
 
-    public void PrintLine(string text)
+    public void PrintLine(string? text = null, ConsoleColor? textForegroundColor = null, ConsoleColor? textBackgroundColor = null)
     {
         SetCursor();
-        NativePrintLine(text);
+        NativePrintLine(text, textForegroundColor, textBackgroundColor);
+    }
+
+    public void PrintTokens(List<TextToken> textTokens, string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null)
+    {
+        SetCursor();
+
+        for (var i = 0; i < textTokens.Count; i++)
+        {
+            var textToken = textTokens[i];
+            NativePrint(textToken.Text, textToken.ForegroundColor, textToken.BackgroundColor);
+
+            if (separator is not null && i < textTokens.Count - 1)
+                NativePrint(separator, separatorForegroundColor, separatorBackgroundColor);
+        }
+    }
+
+    public void PrintTokens(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params TextToken[] textTokens)
+    {
+        PrintTokens(textTokens.ToList(), separator, separatorForegroundColor, separatorBackgroundColor);
+    }
+
+    public void PrintTokens(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params string[] textTokens)
+    {
+        var textTokenObjects = textTokens.Select(x => new TextToken { Text = x }).ToList();
+        PrintTokens(textTokenObjects, separator, separatorForegroundColor, separatorBackgroundColor);
+    }
+
+    public void PrintTokens(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params object[] textTokens)
+    {
+        var textTokenObjects = textTokens.Select(x => x switch
+        {
+            string stringToken => new TextToken { Text = stringToken },
+            TextToken textToken => textToken,
+            _ => throw new ArgumentException($"Only {nameof(String)} and {nameof(TextToken)} types are supported as text token types.")
+        }).ToList();
+        PrintTokens(textTokenObjects, separator, separatorForegroundColor, separatorBackgroundColor);
+    }
+
+    public void PrintTokensLine(List<TextToken> textTokens, string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null)
+    {
+        PrintTokens(textTokens, separator, separatorForegroundColor, separatorBackgroundColor);
+        PrintLine();
+    }
+
+    public void PrintTokensLine(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params TextToken[] textTokens)
+    {
+        PrintTokens(separator, separatorForegroundColor, separatorBackgroundColor, textTokens);
+        PrintLine();
+    }
+
+    public void PrintTokensLine(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params string[] textTokens)
+    {
+        PrintTokens(separator, separatorForegroundColor, separatorBackgroundColor, textTokens);
+        PrintLine();
+    }
+
+    public void PrintTokensLine(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params object[] textTokens)
+    {
+        PrintTokens(separator, separatorForegroundColor, separatorBackgroundColor, textTokens);
+        PrintLine();
+    }
+
+    public void ClearLastLine()
+    {
+        var currentCursorPosition = NativeGetCursorPosition();
+        NativeSetCursorPosition(0, currentCursorPosition.TopPosition - 1);
+        NativeClearCurrentLine();
     }
 
     // Private methods
@@ -262,26 +350,29 @@ public class TextUserInterface
     {
         PrintLeftMargin();
 
-        NativeSetTextColor(_theme.TitleForegroundColor, _theme.TitleBackgroundColor);
-
-        NativePrintLine(title);
-
-        NativeResetColor();
+        NativePrintLine(title, _theme.TitleForegroundColor, _theme.TitleBackgroundColor);
     }
 
     private void PrintOption(Option option)
     {
         PrintLeftMargin();
 
+        ConsoleColor foregroundColor;
+        ConsoleColor backgroundColor;
         if (option.IsActive)
-            NativeSetTextColor(_theme.ActiveOptionForegroundColor, _theme.ActiveOptionBackgroundColor);
+        {
+            foregroundColor = _theme.ActiveOptionForegroundColor;
+            backgroundColor = _theme.ActiveOptionBackgroundColor;
+        }
         else
-            NativeSetTextColor(_theme.OptionsForegroundColor, _theme.OptionsBackgroundColor);
+        {
+            foregroundColor = _theme.OptionsForegroundColor;
+            backgroundColor = _theme.OptionsBackgroundColor;
+        }
 
         var optionText = $"{_theme.OptionsIndicator} {option.Name}";
-        NativePrintLine(optionText);
 
-        NativeResetColor();
+        NativePrintLine(optionText, foregroundColor, backgroundColor);
     }
 
     private void PrintLineSeparator(bool printNewLineBefore = false, bool printNewLineAfter = false)
@@ -291,17 +382,13 @@ public class TextUserInterface
 
         PrintLeftMargin();
 
-        NativeSetTextColor(_theme.LineSeparatorForegroundColor, _theme.LineSeparatorBackgroundColor);
-
         var lineSeparator = _theme.LineSeparator;
         if (_theme.RepeatLineSeparatorToFitWidth)
         {
             var repeatSeparatorCount = Console.WindowWidth / 2 - _theme.LeftMarginColumns;
             lineSeparator = string.Concat(Enumerable.Repeat(_theme.LineSeparator, repeatSeparatorCount));
         }
-        NativePrintLine(lineSeparator);
-
-        NativeResetColor();
+        NativePrintLine(lineSeparator, _theme.LineSeparatorForegroundColor, _theme.LineSeparatorBackgroundColor);
 
         if (printNewLineAfter)
             NativePrintLine();
@@ -313,36 +400,35 @@ public class TextUserInterface
         NativeDisplayCursor(_theme.DisplayCursor);
     }
 
-    private void ClearCurrentMenu()
-    {
-        if (_currentMenu is null) throw new Exception("Unable to clear current menu because it was not provided.");
-
-        var currentCursorPositionBackup = NativeGetCursorPosition();
-
-        var topCurrentPosition = _currentMenu.TopStartPosition;
-        var topEndPosition = _currentMenu.TopEndPosition;
-
-        while (topCurrentPosition < topEndPosition)
-        {
-            NativeSetCursorPosition(currentCursorPositionBackup.LeftPosition, topCurrentPosition);
-
-            Console.Write(new string(' ', Console.BufferWidth));
-            topCurrentPosition++;
-        }
-
-        NativeSetCursorPosition(currentCursorPositionBackup.LeftPosition, currentCursorPositionBackup.TopPosition);
-    }
-
     // Native methods
-
-    private static void NativePrint(string? text = null)
+    private static void NativePrint(string? text = null, ConsoleColor? textForegroundColor = null, ConsoleColor? textBackgroundColor = null)
     {
+        var backupColor = NativeGetTextColor();
+
+        if (textForegroundColor is not null)
+            NativeSetTextForegroundColor(textForegroundColor.Value);
+
+        if (textBackgroundColor is not null)
+            NativeSetTextBackgroundColor(textBackgroundColor.Value);
+
         Console.Write(text);
+
+        NativeSetTextColor(backupColor.ForegroundColor, backupColor.BackgroundColor);
     }
 
-    private static void NativePrintLine(string? text = null)
+    private static void NativePrintLine(string? text = null, ConsoleColor? textForegroundColor = null, ConsoleColor? textBackgroundColor = null)
     {
+        var backupColor = NativeGetTextColor();
+
+        if (textForegroundColor is not null)
+            NativeSetTextForegroundColor(textForegroundColor.Value);
+
+        if (textBackgroundColor is not null)
+            NativeSetTextBackgroundColor(textBackgroundColor.Value);
+
         Console.WriteLine(text);
+
+        NativeSetTextColor(backupColor.ForegroundColor, backupColor.BackgroundColor);
     }
 
     private static (int LeftPosition, int TopPosition) NativeGetCursorPosition()
@@ -361,10 +447,30 @@ public class TextUserInterface
         Console.SetCursorPosition(leftPosition, topPosition);
     }
 
-    private static void NativeSetTextColor(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+    private static (ConsoleColor ForegroundColor, ConsoleColor BackgroundColor) NativeGetTextColor()
     {
-        Console.ForegroundColor = foregroundColor;
-        Console.BackgroundColor = backgroundColor;
+        return (Console.ForegroundColor, Console.BackgroundColor);
+    }
+
+    private static void NativeSetTextColor(ConsoleColor textForegroundColor, ConsoleColor textBackgroundColor)
+    {
+        Console.ForegroundColor = textForegroundColor;
+        Console.BackgroundColor = textBackgroundColor;
+    }
+
+    private static void NativeSetTextForegroundColor(ConsoleColor textForegroundColor)
+    {
+        Console.ForegroundColor = textForegroundColor;
+    }
+
+    private static void NativeSetTextBackgroundColor(ConsoleColor textBackgroundColor)
+    {
+        Console.BackgroundColor = textBackgroundColor;
+    }
+
+    private static void NativeClearCurrentLine()
+    {
+        Console.Write(new string(' ', Console.BufferWidth));
     }
 
     private static void NativeResetColor()
