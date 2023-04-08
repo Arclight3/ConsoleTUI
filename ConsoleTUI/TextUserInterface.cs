@@ -5,19 +5,15 @@ namespace Iustinsoft.ConsoleTUI;
 
 public class TextUserInterface
 {
-    private Menu? _currentMenu = null;
+    private Menu? _currentMenu;
     private ITheme _theme = new DefaultTheme();
 
     // Theme
-    public void SetTheme(ITheme theme)
-    {
+    public void SetTheme(ITheme theme) =>
         _theme = theme;
-    }
 
-    public void ResetTheme()
-    {
+    public void ResetTheme() =>
         _theme = new DefaultTheme();
-    }
 
     // Menu Printing
     public void PrintMenu(Menu menu)
@@ -33,15 +29,13 @@ public class TextUserInterface
 
     public void RefreshMenu()
     {
-        if (_currentMenu is not null)
-        {
-            ClearMenu();
+        if (_currentMenu is null) return;
 
-            PrintCurrentMenu(true);
-        }
+        ClearMenu(true);
+        PrintCurrentMenu(true);
     }
 
-    public void ClearMenu(bool restoreCurrentCursorPosition = true)
+    public void ClearMenu(bool restoreCurrentCursorPosition = false)
     {
         if (_currentMenu is null) throw new Exception("Unable to clear current menu because it was not provided.");
 
@@ -60,6 +54,8 @@ public class TextUserInterface
 
         if (restoreCurrentCursorPosition)
             NativeSetCursorPosition(currentCursorPositionBackup.LeftPosition, currentCursorPositionBackup.TopPosition);
+        else
+            NativeSetCursorPosition(_currentMenu.LeftStartPosition, _currentMenu.TopStartPosition);
     }
 
     public void ClearScreen()
@@ -118,63 +114,56 @@ public class TextUserInterface
         NativePrintLine(text, textForegroundColor, textBackgroundColor);
     }
 
-    public void PrintTokens(List<TextToken> textTokens, string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null)
+    public void PrintTokens(List<TextToken> textTokens)
     {
         SetCursor();
 
-        for (var i = 0; i < textTokens.Count; i++)
-        {
-            var textToken = textTokens[i];
+        foreach (var textToken in textTokens)
             NativePrint(textToken.Text, textToken.ForegroundColor, textToken.BackgroundColor);
-
-            if (separator is not null && i < textTokens.Count - 1)
-                NativePrint(separator, separatorForegroundColor, separatorBackgroundColor);
-        }
     }
 
-    public void PrintTokens(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params TextToken[] textTokens)
-    {
-        PrintTokens(textTokens.ToList(), separator, separatorForegroundColor, separatorBackgroundColor);
-    }
+    public void PrintTokens(TextToken token1, TextToken token2) =>
+        PrintTokens(new List<TextToken> { token1, token2 });
 
-    public void PrintTokens(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params string[] textTokens)
-    {
-        var textTokenObjects = textTokens.Select(x => new TextToken { Text = x }).ToList();
-        PrintTokens(textTokenObjects, separator, separatorForegroundColor, separatorBackgroundColor);
-    }
+    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3) =>
+        PrintTokens(new List<TextToken> { token1, token2, token3 });
 
-    public void PrintTokens(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params object[] textTokens)
-    {
-        var textTokenObjects = textTokens.Select(x => x switch
-        {
-            string stringToken => new TextToken { Text = stringToken },
-            TextToken textToken => textToken,
-            _ => throw new ArgumentException($"Only {nameof(String)} and {nameof(TextToken)} types are supported as text token types.")
-        }).ToList();
-        PrintTokens(textTokenObjects, separator, separatorForegroundColor, separatorBackgroundColor);
-    }
+    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3, TextToken token4) =>
+        PrintTokens(new List<TextToken> { token1, token2, token3, token4 });
 
-    public void PrintTokensLine(List<TextToken> textTokens, string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null)
+    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5) =>
+        PrintTokens(new List<TextToken> { token1, token2, token3, token4, token5 });
+
+    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5, TextToken token6) =>
+        PrintTokens(new List<TextToken> { token1, token2, token3, token4, token5, token6 });
+
+    public void PrintTokensLine(TextToken token1, TextToken token2)
     {
-        PrintTokens(textTokens, separator, separatorForegroundColor, separatorBackgroundColor);
+        PrintTokens(token1, token2);
         PrintLine();
     }
 
-    public void PrintTokensLine(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params TextToken[] textTokens)
+    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3)
     {
-        PrintTokens(separator, separatorForegroundColor, separatorBackgroundColor, textTokens);
+        PrintTokens(token1, token2, token3);
         PrintLine();
     }
 
-    public void PrintTokensLine(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params string[] textTokens)
+    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3, TextToken token4)
     {
-        PrintTokens(separator, separatorForegroundColor, separatorBackgroundColor, textTokens);
+        PrintTokens(token1, token2, token3, token4);
         PrintLine();
     }
 
-    public void PrintTokensLine(string? separator = null, ConsoleColor? separatorForegroundColor = null, ConsoleColor? separatorBackgroundColor = null, params object[] textTokens)
+    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5)
     {
-        PrintTokens(separator, separatorForegroundColor, separatorBackgroundColor, textTokens);
+        PrintTokens(token1, token2, token3, token4, token5);
+        PrintLine();
+    }
+
+    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5, TextToken token6)
+    {
+        PrintTokens(token1, token2, token3, token4, token5, token6);
         PrintLine();
     }
 
@@ -225,9 +214,7 @@ public class TextUserInterface
         if (_currentMenu is null) throw new Exception("Unable to add default options because there is no active menu.");
 
         if (_theme.AddExitOption)
-        {
-            _currentMenu.Options.Add(new Option { Name = "Exit" });
-        }
+            _currentMenu.Options.Add(new Option("Exit"));
     }
 
     private void SelectNextOption()
@@ -431,50 +418,30 @@ public class TextUserInterface
         NativeSetTextColor(backupColor.ForegroundColor, backupColor.BackgroundColor);
     }
 
-    private static (int LeftPosition, int TopPosition) NativeGetCursorPosition()
-    {
-        var cursorPosition = Console.GetCursorPosition();
-        return cursorPosition;
-    }
+    private static (int LeftPosition, int TopPosition) NativeGetCursorPosition() =>
+        Console.GetCursorPosition();
 
-    private static void NativeDisplayCursor(bool display)
-    {
+    private static void NativeDisplayCursor(bool display) =>
         Console.CursorVisible = display;
-    }
 
-    private static void NativeSetCursorPosition(int leftPosition, int topPosition)
-    {
+    private static void NativeSetCursorPosition(int leftPosition, int topPosition) =>
         Console.SetCursorPosition(leftPosition, topPosition);
-    }
 
-    private static (ConsoleColor ForegroundColor, ConsoleColor BackgroundColor) NativeGetTextColor()
-    {
-        return (Console.ForegroundColor, Console.BackgroundColor);
-    }
+    private static (ConsoleColor ForegroundColor, ConsoleColor BackgroundColor) NativeGetTextColor() =>
+        (Console.ForegroundColor, Console.BackgroundColor);
 
-    private static void NativeSetTextColor(ConsoleColor textForegroundColor, ConsoleColor textBackgroundColor)
-    {
+    private static void NativeSetTextColor(ConsoleColor textForegroundColor, ConsoleColor textBackgroundColor) =>
+        (Console.ForegroundColor, Console.BackgroundColor) = (textForegroundColor, textBackgroundColor);
+
+    private static void NativeSetTextForegroundColor(ConsoleColor textForegroundColor) =>
         Console.ForegroundColor = textForegroundColor;
+
+    private static void NativeSetTextBackgroundColor(ConsoleColor textBackgroundColor) =>
         Console.BackgroundColor = textBackgroundColor;
-    }
 
-    private static void NativeSetTextForegroundColor(ConsoleColor textForegroundColor)
-    {
-        Console.ForegroundColor = textForegroundColor;
-    }
-
-    private static void NativeSetTextBackgroundColor(ConsoleColor textBackgroundColor)
-    {
-        Console.BackgroundColor = textBackgroundColor;
-    }
-
-    private static void NativeClearCurrentLine()
-    {
+    private static void NativeClearCurrentLine() =>
         Console.Write(new string(' ', Console.BufferWidth));
-    }
 
-    private static void NativeResetColor()
-    {
+    private static void NativeResetColor() =>
         Console.ResetColor();
-    }
 }

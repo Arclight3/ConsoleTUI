@@ -10,36 +10,24 @@ public record Menu
     internal int TopEndPosition { get; set; }
     internal int LeftEndPosition { get; set; }
 
-    public static Menu Create(string title, List<Option> options)
-    {
-        var menu = new Menu
+    public static Menu Create(string title, List<Option> options) =>
+        new()
         {
             Title = title,
             Options = options
         };
 
-        return menu;
-    }
-
-    public static Menu Create(string title, params Option[] options)
-    {
-        var menu = new Menu
+    public static Menu Create(string title, params Option[] options) =>
+        new()
         {
             Title = title,
             Options = options.ToList()
         };
 
-        return menu;
-    }
-
-    public static Menu Create(string title, params string[] options)
-    {
-        var menu = new Menu
+    public static Menu Create(string title, params string[] options) =>
+        new()
         {
             Title = title,
             Options = options.Select(Option.Create).ToList()
         };
-
-        return menu;
-    }
 }

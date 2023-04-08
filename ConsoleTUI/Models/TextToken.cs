@@ -1,10 +1,15 @@
-﻿using Iustinsoft.ConsoleTUI.Models.Themes;
+﻿namespace Iustinsoft.ConsoleTUI.Models;
 
-namespace Iustinsoft.ConsoleTUI.Models;
-
-public class TextToken
+public record TextToken(string Text)
 {
-    public string Text { get; set; } = default!;
+    public TextToken(string text, ConsoleColor? foregroundColor)
+        : this(text) =>
+        ForegroundColor = foregroundColor;
+
+    public TextToken(string text, ConsoleColor? foregroundColor, ConsoleColor? backgroundColor)
+        : this(text) =>
+        (ForegroundColor, BackgroundColor) = (foregroundColor, backgroundColor);
+
     public ConsoleColor? ForegroundColor { get; set; }
     public ConsoleColor? BackgroundColor { get; set; }
 }

@@ -1,12 +1,8 @@
 ﻿namespace Iustinsoft.ConsoleTUI.Models;
 
-public record Option
+public record Option(string Name)
 {
-    public string Name { get; set; } = default!;
     public bool IsActive { get; set; }
 
-    public static Option Create(string name)
-    {
-        return new Option { Name = name };
-    }
+    public static Option Create(string name) => new(name);
 }
