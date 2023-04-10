@@ -114,56 +114,17 @@ public class TextUserInterface
         NativePrintLine(text, textForegroundColor, textBackgroundColor);
     }
 
-    public void PrintTokens(List<TextToken> textTokens)
+    public void PrintTokens(params TextToken[] tokens)
     {
         SetCursor();
 
-        foreach (var textToken in textTokens)
+        foreach (var textToken in tokens)
             NativePrint(textToken.Text, textToken.ForegroundColor, textToken.BackgroundColor);
     }
 
-    public void PrintTokens(TextToken token1, TextToken token2) =>
-        PrintTokens(new List<TextToken> { token1, token2 });
-
-    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3) =>
-        PrintTokens(new List<TextToken> { token1, token2, token3 });
-
-    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3, TextToken token4) =>
-        PrintTokens(new List<TextToken> { token1, token2, token3, token4 });
-
-    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5) =>
-        PrintTokens(new List<TextToken> { token1, token2, token3, token4, token5 });
-
-    public void PrintTokens(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5, TextToken token6) =>
-        PrintTokens(new List<TextToken> { token1, token2, token3, token4, token5, token6 });
-
-    public void PrintTokensLine(TextToken token1, TextToken token2)
+    public void PrintTokensLine(params TextToken[] tokens)
     {
-        PrintTokens(token1, token2);
-        PrintLine();
-    }
-
-    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3)
-    {
-        PrintTokens(token1, token2, token3);
-        PrintLine();
-    }
-
-    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3, TextToken token4)
-    {
-        PrintTokens(token1, token2, token3, token4);
-        PrintLine();
-    }
-
-    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5)
-    {
-        PrintTokens(token1, token2, token3, token4, token5);
-        PrintLine();
-    }
-
-    public void PrintTokensLine(TextToken token1, TextToken token2, TextToken token3, TextToken token4, TextToken token5, TextToken token6)
-    {
-        PrintTokens(token1, token2, token3, token4, token5, token6);
+        PrintTokens(tokens);
         PrintLine();
     }
 
