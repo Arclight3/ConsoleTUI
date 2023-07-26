@@ -5,7 +5,9 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iustinsoft.ConsoleTUI", "ConsoleTUI\Iustinsoft.ConsoleTUI.csproj", "{CF4431D1-3F55-4BFC-80DF-043C9FD81DFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{7631329D-E32D-41D1-95AF-4A7CDD072A77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", "{7631329D-E32D-41D1-95AF-4A7CDD072A77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iustinsoft.ConsoleTUI.Logging", "Iustinsoft.ConsoleTUI.Logging\Iustinsoft.ConsoleTUI.Logging.csproj", "{DCF02CA6-B169-461A-82E1-701D0F8964D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7631329D-E32D-41D1-95AF-4A7CDD072A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7631329D-E32D-41D1-95AF-4A7CDD072A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7631329D-E32D-41D1-95AF-4A7CDD072A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF02CA6-B169-461A-82E1-701D0F8964D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF02CA6-B169-461A-82E1-701D0F8964D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF02CA6-B169-461A-82E1-701D0F8964D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF02CA6-B169-461A-82E1-701D0F8964D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

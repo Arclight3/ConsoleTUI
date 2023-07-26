@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageId>Iustinsoft.ConsoleTUI.Logging</PackageId>
+		<Authors>Iustin Micu</Authors>
+		<Company>Iustinsoft</Company>
+		<Description>Adds support for ILogger to write to the console via ConsoleTUI</Description>
+		<PackageProjectUrl>https://github.com/Arclight3/ConsoleTUI</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Arclight3/ConsoleTUI</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>dotnet;core;console;terminal;tui;gui;logging;logger;interface;textuserinterface;options;menu</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Version>3.0.1</Version>
+		<PackageIcon>package-icon.png</PackageIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\package-icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConsoleTUI\Iustinsoft.ConsoleTUI.csproj" />
+  </ItemGroup>
+
+</Project>

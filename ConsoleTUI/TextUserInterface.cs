@@ -6,14 +6,14 @@ namespace Iustinsoft.ConsoleTUI;
 public class TextUserInterface
 {
     private Menu? _currentMenu;
-    private ITheme _theme = new DefaultTheme();
+    private Theme _theme = new();
 
     // Theme
-    public void SetTheme(ITheme theme) =>
+    public void SetTheme(Theme theme) =>
         _theme = theme;
 
     public void ResetTheme() =>
-        _theme = new DefaultTheme();
+        _theme = new Theme();
 
     // Menu Printing
     public void PrintMenu(Menu menu)
@@ -174,7 +174,7 @@ public class TextUserInterface
     {
         if (_currentMenu is null) throw new Exception("Unable to add default options because there is no active menu.");
 
-        if (_theme.AddExitOption)
+        if (_theme.MenuTheme.AddExitOption)
             _currentMenu.Options.Add(new Option("Exit"));
     }
 
@@ -196,7 +196,7 @@ public class TextUserInterface
                 }
                 else
                 {
-                    if (_theme.AllowCircularOptionsNavigation)
+                    if (_theme.MenuTheme.AllowCircularOptionsNavigation)
                     {
                         _currentMenu.Options[i].IsActive = false;
                         _currentMenu.Options[0].IsActive = true;
@@ -230,7 +230,7 @@ public class TextUserInterface
                 }
                 else
                 {
-                    if (_theme.AllowCircularOptionsNavigation)
+                    if (_theme.MenuTheme.AllowCircularOptionsNavigation)
                     {
                         _currentMenu.Options[i].IsActive = false;
                         _currentMenu.Options[^1].IsActive = true;
@@ -298,7 +298,7 @@ public class TextUserInterface
     {
         PrintLeftMargin();
 
-        NativePrintLine(title, _theme.TitleForegroundColor, _theme.TitleBackgroundColor);
+        NativePrintLine(title, _theme.MenuTheme.TitleForegroundColor, _theme.MenuTheme.TitleBackgroundColor);
     }
 
     private void PrintOption(Option option)
@@ -309,16 +309,16 @@ public class TextUserInterface
         ConsoleColor backgroundColor;
         if (option.IsActive)
         {
-            foregroundColor = _theme.ActiveOptionForegroundColor;
-            backgroundColor = _theme.ActiveOptionBackgroundColor;
+            foregroundColor = _theme.MenuTheme.ActiveOptionForegroundColor;
+            backgroundColor = _theme.MenuTheme.ActiveOptionBackgroundColor;
         }
         else
         {
-            foregroundColor = _theme.OptionsForegroundColor;
-            backgroundColor = _theme.OptionsBackgroundColor;
+            foregroundColor = _theme.MenuTheme.OptionsForegroundColor;
+            backgroundColor = _theme.MenuTheme.OptionsBackgroundColor;
         }
 
-        var optionText = $"{_theme.OptionsIndicator} {option.Name}";
+        var optionText = $"{_theme.MenuTheme.OptionsIndicator} {option.Name}";
 
         NativePrintLine(optionText, foregroundColor, backgroundColor);
     }
@@ -330,13 +330,13 @@ public class TextUserInterface
 
         PrintLeftMargin();
 
-        var lineSeparator = _theme.LineSeparator;
-        if (_theme.RepeatLineSeparatorToFitWidth)
+        var lineSeparator = _theme.MenuTheme.LineSeparator;
+        if (_theme.MenuTheme.RepeatLineSeparatorToFitWidth)
         {
             var repeatSeparatorCount = Console.WindowWidth / 2 - _theme.LeftMarginColumns;
-            lineSeparator = string.Concat(Enumerable.Repeat(_theme.LineSeparator, repeatSeparatorCount));
+            lineSeparator = string.Concat(Enumerable.Repeat(_theme.MenuTheme.LineSeparator, repeatSeparatorCount));
         }
-        NativePrintLine(lineSeparator, _theme.LineSeparatorForegroundColor, _theme.LineSeparatorBackgroundColor);
+        NativePrintLine(lineSeparator, _theme.MenuTheme.LineSeparatorForegroundColor, _theme.MenuTheme.LineSeparatorBackgroundColor);
 
         if (printNewLineAfter)
             NativePrintLine();
@@ -345,7 +345,7 @@ public class TextUserInterface
     private void SetCursor()
     {
         NativeSetCursorPosition(_theme.LeftMarginColumns, NativeGetCursorPosition().TopPosition);
-        NativeDisplayCursor(_theme.DisplayCursor);
+        NativeDisplayCursor(_theme.MenuTheme.DisplayCursor);
     }
 
     // Native methods

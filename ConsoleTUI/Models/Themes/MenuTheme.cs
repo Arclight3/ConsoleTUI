@@ -1,6 +1,6 @@
 ﻿namespace Iustinsoft.ConsoleTUI.Models.Themes;
 
-public class DefaultTheme : ITheme
+public class MenuTheme
 {
     // Title
     public ConsoleColor TitleForegroundColor { get; set; } = ConsoleColor.Green;
@@ -15,6 +15,7 @@ public class DefaultTheme : ITheme
     public ConsoleColor OptionsForegroundColor { get; set; } = ConsoleColor.Gray;
     public ConsoleColor OptionsBackgroundColor { get; set; } = ConsoleColor.Black;
     public bool AddExitOption { get; set; } = true;
+    public bool AllowCircularOptionsNavigation { get; set; } = true;
 
     // Line Separator
     public string LineSeparator { get; set; } = "__";
@@ -22,9 +23,5 @@ public class DefaultTheme : ITheme
     public ConsoleColor LineSeparatorForegroundColor { get; set; } = ConsoleColor.White;
     public ConsoleColor LineSeparatorBackgroundColor { get; set; } = ConsoleColor.Black;
 
-    // General
-    public int LeftMarginColumns { get; set; } = 2;
-    public int TopMarginLines { get; set; } = 0;
-    public bool AllowCircularOptionsNavigation { get; set; } = true;
     public bool DisplayCursor { get; set; } = false;
 }
