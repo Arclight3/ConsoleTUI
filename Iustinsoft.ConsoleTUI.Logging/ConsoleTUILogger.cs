@@ -28,7 +28,7 @@ public class ConsoleTUILogger<T> : ILogger<T>
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        if (IsEnabled(logLevel)) return;
+        if (IsEnabled(logLevel) is false) return;
         if (logLevel < MinimumLogLevel) return;
 
         if (formatter is null) throw new ArgumentNullException(nameof(formatter));
