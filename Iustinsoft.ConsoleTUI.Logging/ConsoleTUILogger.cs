@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Iustinsoft.ConsoleTUI.Logging;
 
-public class ConsoleTUILogger<T> : ILogger<T>
+public class ConsoleTUILogger : ILogger
 {
     public LogLevel MinimumLogLevel { get; set; }
 
